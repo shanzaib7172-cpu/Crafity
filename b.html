@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Latest News</title>
+    <style>
+    body {
+    font-family: Arial;
+    background: #eee;
+    margin: 0;
+    padding: 20px;
+}
+
+.title {
+    background: #d9edf7;
+    display: inline-block;
+    padding: 8px 15px;
+    color: #31708f;
+    margin-bottom: 20px;
+}
+
+.news-container {
+    display: flex;
+    gap: 20px;
+}
+
+.news-card {
+    width: 48%;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+.image-box {
+    position: relative;
+}
+
+.image-box img {
+    width: 100%;
+    display: block;
+}
+
+/* Overlay */
+.overlay {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    border: 2px solid #fff;
+    padding: 10px;
+    color: #fff;
+    background: rgba(0,0,0,0.4);
+}
+
+.overlay h3 {
+    margin: 0;
+    color: yellow;
+}
+
+.overlay p {
+    font-size: 12px;
+}
+
+/* Content */
+.content {
+    padding: 10px;
+}
+
+.date {
+    font-size: 12px;
+    color: gray;
+}
+
+.content h3 {
+    margin: 10px 0;
+}
+
+button {
+    padding: 5px 10px;
+    border: none;
+    background: #ddd;
+    cursor: pointer;
+}
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #f8f9fb;
+}
+
+.container {
+    width: 85%;
+    margin: auto;
+}
+
+/* HERO */
+.hero {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                url('https://via.placeholder.com/1500x500');
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 40px;
+}
+
+/* PROJECT INFO */
+.project-info {
+    display: flex;
+    justify-content: space-between;
+    background: white;
+    padding: 20px;
+    margin-top: -50px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.info-box h4 {
+    margin-bottom: 5px;
+}
+
+/* SECTIONS */
+.section {
+    padding: 50px 0;
+}
+
+.two-col {
+    display: flex;
+    gap: 50px;
+}
+
+/* CARDS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* RESULTS */
+.results {
+    background: #222;
+    color: white;
+    padding: 50px 0;
+    text-align: center;
+}
+
+.result-box {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+/* CTA */
+.cta {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.cta button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    cursor: pointer;
+    border-radius: 5px;
+}</style>
+</head>
+<body>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Portfolio Detail</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<section class="portfolio-detail">
+
+    <!-- HERO SECTION -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Electrician Local SEO Campaign</h1>
+            <p>Improving visibility & generating consistent leads from Google</p>
+        </div>
+    </div>
+
+    <!-- PROJECT INFO -->
+    <div class="container project-info">
+        <div class="info-box">
+            <h4>Services</h4>
+            <p>Local SEO, Google Optimization</p>
+        </div>
+        <div class="info-box">
+            <h4>Client</h4>
+            <p>Electrical Services Business</p>
+        </div>
+        <div class="info-box">
+            <h4>Location</h4>
+            <p>UK</p>
+        </div>
+        <div class="info-box">
+            <h4>Platform</h4>
+            <p>Google Business + Website</p>
+        </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="container section">
+        <h2>Project Overview</h2>
+        <p>
+            This project focused on improving local search visibility for an electrician business.
+            The goal was to increase rankings, visibility, and generate consistent enquiries.
+        </p>
+    </div>
+
+    <!-- CHALLENGES -->
+    <div class="container section two-col">
+        <div>
+            <h2>Challenges</h2>
+            <ul>
+                <li>Low Google visibility</li>
+                <li>No Local Pack ranking</li>
+                <li>Poor keyword targeting</li>
+                <li>Dependence on referrals</li>
+            </ul>
+        </div>
+
+        <div>
+            <h2>Objectives</h2>
+            <ul>
+                <li>Improve local rankings</li>
+                <li>Optimize Google Business Profile</li>
+                <li>Increase enquiries</li>
+                <li>Boost online presence</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SOLUTION -->
+    <div class="container section">
+        <h2>Strategy & Solution</h2>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Google Optimization</h3>
+                <p>Optimized profile, added services, images & reviews strategy.</p>
+            </div>
+
+            <div class="card">
+                <h3>Keyword Targeting</h3>
+                <p>Focused on high-intent local keywords for better ranking.</p>
+            </div>
+
+            <div class="card">
+                <h3>On-Page SEO</h3>
+                <p>Improved meta tags, structure & content optimization.</p>
+            </div>
+
+            <div class="card">
+                <h3>Local Listings</h3>
+                <p>Created consistent business citations across directories.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results">
+        <div class="container">
+            <h2>Results</h2>
+            <div class="result-box">
+                <div>📈 Higher Rankings</div>
+                <div>📍 Local Pack Visibility</div>
+                <div>📞 More Enquiries</div>
+                <div>🚀 Consistent Leads</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="container cta">
+        <h2>Want Similar Results?</h2>
+        <p>Let’s grow your business with Local SEO</p>
+        <button>Contact Us</button>
+    </div>
+
+</section>
+
+</body>
+</html>
+
+</body>
+</html>

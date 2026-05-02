@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chat</title>
+
+<style>
+body{
+  background:#fff5f4;
+  font-family:Segoe UI;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.chat-box{
+  width:600px;
+  height:700px;
+  background:#fff;
+  border-radius:20px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border:2px solid #ffd6d1;
+}
+
+.chat-messages{
+  flex:1;
+  overflow-y:auto;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  background:#fffaf9;
+}
+
+.message{
+  max-width:40%;
+  padding:10px;
+  border-radius:12px;
+  word-break:break-word;
+}
+
+.sent{
+  background:#ff2768;
+  color:white;
+  margin-left:auto;
+}
+
+.received{
+  background:#ffe5e2;
+  color:#333;
+  margin-right:auto;
+}
+
+.chat-input{
+  display:flex;
+  flex-direction:column;
+  padding:10px;
+  border-top:1px solid #ddd;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+}
+
+.chat-input input[type="text"]{
+  flex:1;
+  padding:10px;
+  border-radius:20px;
+  border:1px solid #ddd;
+  outline:none;
+}
+.chat-header{
+  padding:15px;
+  background:#ff2768;
+  color:white;
+  font-weight:600;
+  font-size:16px;
+  text-align:center;
+  border-bottom:2px solid #ffd6d1;
+}
+.chat-input button{
+  margin-left:6px;
+  background:#ff2768;
+  color:white;
+  border:none;
+  padding:10px;
+  border-radius:50%;
+  cursor:pointer;
+}
+
+.preview{
+  margin-top:8px;
+  max-width:120px;
+  border-radius:10px;
+  display:none;
+}
+
+audio{
+  width:220px;
+  margin-top:5px;
+}
+</style>
+</head>
+
+<body>
+
+
+  
+<div class="chat-box">
+  <div class="chat-header">
+    {% if sender_type == "customer" %}
+      Chat with seller {{ seller.name }}
+    {% else %}
+      Chat with customer {{ customer.name }}
+    {% endif %}
+  </div>
+<div class="chat-messages" id="chat-messages"></div>
+
+<div class="chat-input">
+
+<form id="chat-form" enctype="multipart/form-data">
+
+  {% csrf_token %}
+
+  <div class="row">
+
+    <input type="text" id="message-input" placeholder="Type message...">
+
+    <input type="file" id="image-input" name="image" hidden>
+
+    <button type="button" onclick="imageInput.click()">📷</button>
+    <button type="button" id="mic-btn">🎤</button>
+    <button type="submit">➤</button>
+
+  </div>
+
+  <!-- IMAGE PREVIEW -->
+  <img id="preview" class="preview">
+
+</form>
+
+</div>
+
+</div>
+
+<script>
+
+const chatMessages = document.getElementById("chat-messages");
+const messageInput = document.getElementById("message-input");
+const imageInput = document.getElementById("image-input");
+const preview = document.getElementById("preview");
+
+let seen = new Set();
+
+/* ================= IMAGE PREVIEW FIX ================= */
+imageInput.addEventListener("change", function(){
+
+  const file = this.files[0];
+
+  if(file){
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+      preview.src = e.target.result;
+      preview.style.display = "block";
+    };
+
+    reader.readAsDataURL(file);
+  }
+});
+
+/* ================= AUDIO ================= */
+let mediaRecorder;
+let audioChunks = [];
+let audioBlob = null;
+let stream;
+let isRecording = false;
+
+document.getElementById("mic-btn").onclick = async () => {
+
+  if (!isRecording) {
+
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    const mimeType =
+      MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+        ? "audio/webm;codecs=opus"
+        : "audio/webm";
+
+    mediaRecorder = new MediaRecorder(stream, { mimeType });
+
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = e => {
+      if (e.data.size > 0) audioChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = () => {
+
+      audioBlob = new Blob(audioChunks, { type: mimeType });
+
+      stream.getTracks().forEach(t => t.stop());
+
+      sendMessage();
+    };
+
+    mediaRecorder.start(250);
+
+    isRecording = true;
+    document.getElementById("mic-btn").innerText = "⏹️";
+
+  } else {
+    mediaRecorder.stop();
+    isRecording = false;
+    document.getElementById("mic-btn").innerText = "🎤";
+  }
+};
+
+/* ================= SEND MESSAGE ================= */
+document.getElementById("chat-form").onsubmit = e => {
+  e.preventDefault();
+  sendMessage();
+};
+
+function sendMessage(){
+
+  const text = messageInput.value.trim();
+  const image = imageInput.files[0];
+
+  if(!text && !image && !audioBlob) return;
+
+  let formData = new FormData();
+
+  formData.append("message", text);
+  formData.append("csrfmiddlewaretoken",
+    document.querySelector("[name=csrfmiddlewaretoken]").value
+  );
+
+  formData.append("sender_type", "{{ sender_type }}");
+
+  if(image){
+    formData.append("image", image);
+  }
+
+  if(audioBlob){
+    formData.append("audio", audioBlob, "voice.webm");
+  }
+
+  fetch("{% url 'send_message' room.id %}", {
+    method:"POST",
+    body:formData
+  })
+  .then(r=>r.json())
+  .then(data=>{
+
+    if(data.error){
+      console.log(data);
+      return;
+    }
+
+    addMessage(data);
+
+    messageInput.value = "";
+    imageInput.value = "";
+    preview.style.display = "none";
+    audioBlob = null;
+  });
+}
+
+/* ================= ADD MESSAGE ================= */
+function addMessage(m){
+
+  if(!m || !m.id) return;
+  if(seen.has(m.id)) return;
+
+  seen.add(m.id);
+
+  let div = document.createElement("div");
+  div.className = "message " +
+    (m.sender_type === "{{ sender_type }}" ? "sent" : "received");
+
+  let html = "";
+
+  if(m.text) html += escapeHtml(m.text);
+
+  if(m.image){
+    html += `<br><img src="${m.image}" style="max-width:150px;border-radius:10px;">`;
+  }
+
+  if(m.audio){
+    html += `
+      <br>
+      <audio controls preload="auto">
+        <source src="${m.audio}?v=${m.id}" type="audio/webm">
+      </audio>
+    `;
+  }
+
+  html += `<div style="font-size:11px;opacity:0.7">${m.time || ""}</div>`;
+
+  div.innerHTML = html;
+
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+/* ================= SAFE TEXT ================= */
+function escapeHtml(text){
+  return text
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;");
+}
+
+/* ================= REFRESH ================= */
+setInterval(()=>{
+
+  fetch("{% url 'get_messages' room.id %}")
+  .then(r=>r.json())
+  .then(data=>{
+
+    data.messages.forEach(addMessage);
+
+  });
+
+},2000);
+
+</script>
+
+</body>
+</html>

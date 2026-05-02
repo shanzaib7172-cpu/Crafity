@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Commission Settings</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #ffc6c3;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      margin-left: 270px;
+      padding: 30px;
+    }
+
+    .box {
+      background: #ff2768;
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 350px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      background: white;
+      color: #ff2768;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1 style="color:#ff2768;">Commission Settings</h1>
+
+  <div class="box">
+    <form method="POST" action="{% url 'update_commission' %}">
+      {% csrf_token %}
+
+      <label>Commission Percentage</label>
+      <input type="number" step="0.01" name="percentage"
+             value="{{ commission.percentage }}">
+
+      <button type="submit">Update Commission</button>
+    </form>
+  </div>
+
+</div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
